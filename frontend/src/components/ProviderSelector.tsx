@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { CheckCircle2, Eye, EyeOff, XCircle } from 'lucide-react'
-import { useProviderConfig } from '../hooks/useProviderConfig'
+import { useProviderConfigContext } from '../App'
 import type { ProviderName } from '../lib/types'
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
@@ -15,7 +15,7 @@ const PROVIDERS: { value: ProviderName; label: string; needsKey: boolean }[] = [
 ]
 
 export default function ProviderSelector() {
-  const { config, setConfig, clearConfig } = useProviderConfig()
+  const { config, setConfig, clearConfig } = useProviderConfigContext()
 
   // Staged form state — not committed until Save is clicked.
   const [provider, setProvider] = useState<ProviderName>(config?.provider ?? 'rule_based')

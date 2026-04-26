@@ -1,7 +1,7 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { Settings } from 'lucide-react'
 import { useStatusContext } from '../App'
-import { useProviderConfig } from '../hooks/useProviderConfig'
+import { useProviderConfigContext } from '../App'
 import ProviderBadge from './ProviderBadge'
 import OllamaBanner from './OllamaBanner'
 import ProviderFallbackBanner from './ProviderFallbackBanner'
@@ -15,7 +15,7 @@ const NAV = [
 
 export default function Layout() {
   const { status, loading, notification, dismissNotification } = useStatusContext()
-  const { config } = useProviderConfig()
+  const { config } = useProviderConfigContext()
   const byokActive = Boolean(config?.apiKey)
 
   return (

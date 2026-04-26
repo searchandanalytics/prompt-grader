@@ -1,5 +1,5 @@
 import type { StatusResponse } from '../lib/types'
-import { useProviderConfig } from '../hooks/useProviderConfig'
+import { useProviderConfigContext } from '../App'
 
 interface Props {
   status: StatusResponse | null
@@ -18,7 +18,7 @@ const PROVIDER_LABEL: Record<string, string> = {
 export default function ProviderBadge({ status, loading }: Props) {
   // Read client-side config so the subtitle reflects UI-supplied keys
   // immediately — the server's /status endpoint can't know about them.
-  const { config } = useProviderConfig()
+  const { config } = useProviderConfigContext()
 
   if (loading) {
     return (
