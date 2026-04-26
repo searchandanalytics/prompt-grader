@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { Settings } from 'lucide-react'
 import { useStatusContext } from '../App'
+import { useProviderConfig } from '../hooks/useProviderConfig'
 import ProviderBadge from './ProviderBadge'
 import OllamaBanner from './OllamaBanner'
 import ProviderFallbackBanner from './ProviderFallbackBanner'
@@ -14,6 +15,8 @@ const NAV = [
 
 export default function Layout() {
   const { status, loading, notification, dismissNotification } = useStatusContext()
+  const { config } = useProviderConfig()
+  const byokActive = Boolean(config?.apiKey)
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -60,7 +63,7 @@ export default function Layout() {
       </header>
 
       {notification && <ProviderFallbackBanner message={notification} onDismiss={dismissNotification} />}
-      {status?.judge_provider === 'none' && !loading && <OllamaBanner />}
+      {status?.judge_provider === 'none' && !loading && !byokActive && <OllamaBanner />}
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <Outlet />

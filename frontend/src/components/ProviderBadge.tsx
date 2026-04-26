@@ -29,10 +29,19 @@ export default function ProviderBadge({ status, loading }: Props) {
   }
   if (!status) return null
 
-  const label =
-    status.judge_provider === 'none'
-      ? 'Rule-based only'
-      : `Judge: ${PROVIDER_LABEL[status.judge_provider] ?? status.judge_provider}${status.judge_model ? ` (${status.judge_model.split('/').pop()})` : ''}`
+  // When a UI key is active, treat the client-configured provider as the
+  // effective provider — the server /status reflects startup config only.
+  const uiProvider = config?.apiKey ? config.provider : null
+
+  const label = (() => {
+    if (uiProvider && uiProvider !== 'rule_based') {
+      return `Judge: ${PROVIDER_LABEL[uiProvider] ?? uiProvider}`
+    }
+    if (status.judge_provider === 'none') return 'Rule-based only'
+    return `Judge: ${PROVIDER_LABEL[status.judge_provider] ?? status.judge_provider}${status.judge_model ? ` (${status.judge_model.split('/').pop()})` : ''}`
+  })()
+
+  const isLlmActive = uiProvider ? uiProvider !== 'rule_based' : status.judge_provider !== 'none'
 
   // Subtitle priority: UI-supplied key (client state) > server-reported source.
   const subtitle = (() => {
@@ -46,15 +55,14 @@ export default function ProviderBadge({ status, loading }: Props) {
     }
   })()
 
-  const colour =
-    status.judge_provider === 'none'
-      ? 'bg-gray-100 text-gray-600 border-gray-300'
-      : 'bg-brand-50 text-brand-700 border-brand-500/30'
+  const colour = isLlmActive
+    ? 'bg-brand-50 text-brand-700 border-brand-500/30'
+    : 'bg-gray-100 text-gray-600 border-gray-300'
 
   return (
     <span className={`inline-flex flex-col items-start rounded-xl border px-3 py-1.5 text-xs font-medium ${colour}`}>
       <span className="flex items-center gap-1.5">
-        <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${status.judge_provider === 'none' ? 'bg-gray-400' : 'bg-green-500'}`} />
+        <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${isLlmActive ? 'bg-green-500' : 'bg-gray-400'}`} />
         {label}
       </span>
       {subtitle && (
