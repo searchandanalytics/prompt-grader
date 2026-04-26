@@ -1,0 +1,1 @@
+export const EXCELLENT_THRESHOLD = 90
